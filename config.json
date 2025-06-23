@@ -1,0 +1,8 @@
+{
+  "voice_mode": true,
+  "language": "en",
+  "secure_pin": "1234",
+  "plugins_enabled": ["chat", "system", "coding", "guardian", "selfedit"],
+  "mic_enabled": true,
+  "speaker_enabled": true
+}
