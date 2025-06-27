@@ -1,3 +1,5 @@
+# 📁 JarvisAI/core/scheduler.py
+
 import threading
 import time
 from voice.talker import speak
