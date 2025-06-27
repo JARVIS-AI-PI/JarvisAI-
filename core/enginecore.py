@@ -7,6 +7,8 @@ from core.scheduler import parse_schedule_command
 from core.ui_state import apply_command
 from core.self_train import log_learning
 from core.plugin_builder import create_plugin
+from core.system_control import run_command
+from core.guardian_mode import is_risky, warn_if_risky
 
 plugins = load_plugins()
 config = load_config()
@@ -78,6 +80,20 @@ def respond_to(text):
         except Exception as e:
             return f"Error in plugin {name}: {e}"
 
+    # 8. Try system command execution (only in dev/hacker mode)
+    if config.get("mode") in ["developer", "hacker"]:
+        if any(word in text for word in ["run", "execute", "terminal", "command"]):
+            command = text.replace("run", "").replace("execute", "").replace("terminal", "").replace("command", "").strip()
+            warning = warn_if_risky(command)
+            if warning:
+                speak(warning)
+                return warning
+            result = run_command(command)
+            speak(result)
+            log_learning(text, result)
+            return result
+
+    # 9. Fallback
     fallback = "Sorry, I don't understand yet."
     remember("last_output", fallback)
     log_learning(text, fallback)
