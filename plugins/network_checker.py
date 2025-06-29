@@ -1,23 +1,24 @@
-import os
+# 📁 JarvisAI/plugins/network_checker.py
+
 import socket
-import platform
 import subprocess
+import platform
 
 def check_internet():
     try:
         host = socket.gethostbyname("www.google.com")
-        s = socket.create_connection((host, 80), 2)
-        s.close()
+        sock = socket.create_connection((host, 80), 2)
+        sock.close()
         return True
     except:
         return False
 
 def ping_site(site="8.8.8.8"):
-    param = "-n" if platform.system().lower() == "windows" else "-c"
-    command = ["ping", param, "2", site]
+    param = "-n" if platform.system().lower()=="windows" else "-c"
+    cmd = ["ping", param, "2", site]
     try:
-        output = subprocess.check_output(command)
-        return output.decode()
+        out = subprocess.check_output(cmd)
+        return out.decode()
     except Exception as e:
         return f"[❌ Ping Error] {e}"
 
@@ -29,27 +30,20 @@ def get_ip():
         s.close()
         return ip
     except:
-        return "❌ Unable to get IP"
+        return "❌ Unable to retrieve IP"
 
 def run():
-    print("🌐 Network Checker Started.")
+    print("🌐 Network Checker Started")
     while True:
-        command = input("Check network (or 'exit'): ").lower()
-        
-        if "internet" in command:
-            online = check_internet()
-            print("✅ Internet is available." if online else "❌ No internet.")
-
-        elif "ping" in command:
-            site = command.replace("ping", "").strip() or "8.8.8.8"
+        cmd = input("Network cmd (or 'exit'): ").lower()
+        if "internet" in cmd:
+            print("✅ Online" if check_internet() else "❌ Offline")
+        elif "ping" in cmd:
+            site = cmd.replace("ping", "").strip() or "8.8.8.8"
             print(ping_site(site))
-
-        elif "ip" in command:
-            print("💻 Your IP:", get_ip())
-
-        elif "exit" in command:
-            print("👋 Exiting Network Checker.")
+        elif "ip" in cmd:
+            print("💻 IP:", get_ip())
+        elif cmd == "exit":
             break
-
         else:
-            print("❓ Unknown command. Try: internet, ping, ip, exit.")
+            print("❓ Try: internet / ping <host> / ip / exit")
