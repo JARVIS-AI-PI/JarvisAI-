@@ -1,0 +1,46 @@
+#!/bin/bash
+
+echo "🔧 Installing JARVIS AI on Raspberry Pi Zero 2 W..."
+
+# Step 1: System updates and Python environment
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3-pip python3-venv espeak git libglib2.0-dev libnss3
+
+# Step 2: Create virtual environment
+cd ~
+python3 -m venv jarvis_env
+source ~/jarvis_env/bin/activate
+
+# Step 3: Clone your Jarvis AI repo
+rm -rf ~/JarvisAI
+git clone https://github.com/JARVIS-AI-PI/JarvisAI-.git ~/JarvisAI
+
+# Step 4: Install Python dependencies
+pip install -r ~/JarvisAI/requirements.txt
+
+# Step 5: Create config file (if not present)
+if [ ! -f ~/JarvisAI/config.json ]; then
+  echo '{}' > ~/JarvisAI/config.json
+fi
+
+# Step 6: Ask for OpenAI API key and save to config
+read -p "🔑 Enter your OpenAI API Key: " API_KEY
+jq --arg key "$API_KEY" '.api_key = $key' ~/JarvisAI/config.json > tmp.$$.json && mv tmp.$$.json ~/JarvisAI/config.json
+
+# Step 7: Create desktop launcher
+cat <<EOF > ~/Desktop/Jarvis.desktop
+[Desktop Entry]
+Name=Jarvis AI
+Exec=sh -c 'cd ~/JarvisAI && source ~/jarvis_env/bin/activate && python3 jarvis.py'
+Icon=utilities-terminal
+Terminal=true
+Type=Application
+EOF
+chmod +x ~/Desktop/Jarvis.desktop
+
+# Step 8: Autostart setup
+mkdir -p ~/.config/autostart
+cp ~/Desktop/Jarvis.desktop ~/.config/autostart/
+
+echo "✅ JARVIS AI is installed and ready!"
+echo "📦 Launch it from your Desktop or restart to auto-run."
