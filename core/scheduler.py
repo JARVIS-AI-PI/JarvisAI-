@@ -18,13 +18,12 @@ def _delayed_speak(text, delay):
 
 def parse_schedule_command(command):
     command = command.lower()
-    
     if "remind me in" in command and "to" in command:
         try:
             part = command.split("remind me in")[1].strip()
             time_part, task = part.split("to", 1)
             task = task.strip()
-            
+
             # Time parser
             delay = 0
             if "second" in time_part:
@@ -39,5 +38,4 @@ def parse_schedule_command(command):
             return schedule_task(task, delay)
         except:
             return "Sorry, couldn't understand the reminder format."
-    
     return None
