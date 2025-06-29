@@ -1,4 +1,6 @@
-from brain.chatgpt import ask_chatgpt
+# 📁 JarvisAI/plugins/edu_tools.py
+
+from chatgpt import ask_chatgpt
 
 def define_word(word):
     return ask_chatgpt(f"Define the word: {word}")
@@ -10,32 +12,25 @@ def summarize_text(text):
     return ask_chatgpt(f"Summarize: {text}")
 
 def spell_word(word):
-    return " ".join([ch.upper() for ch in word])
+    return " ".join(list(word.upper()))
 
 def run():
     print("📚 Educational Tools Plugin Started")
     while True:
-        command = input("Ask (or 'exit'): ").lower()
-        
-        if "define" in command:
-            word = command.replace("define", "").strip()
+        cmd = input("Ask (or 'exit'): ").lower()
+        if cmd.startswith("define"):
+            word = cmd.replace("define", "").strip()
             print("📖", define_word(word))
-
-        elif "explain" in command:
-            topic = command.replace("explain", "").strip()
+        elif cmd.startswith("explain"):
+            topic = cmd.replace("explain", "").strip()
             print("🧠", explain_concept(topic))
-
-        elif "summarize" in command:
-            text = command.replace("summarize", "").strip()
-            print("✂️", summarize_text(text))
-
-        elif "spell" in command:
-            word = command.replace("spell", "").strip()
+        elif cmd.startswith("summarize"):
+            txt = cmd.replace("summarize", "").strip()
+            print("✂️", summarize_text(txt))
+        elif cmd.startswith("spell"):
+            word = cmd.replace("spell", "").strip()
             print("🔤", spell_word(word))
-
-        elif "exit" in command:
-            print("👋 Exiting Edu Tools.")
+        elif cmd == "exit":
             break
-
         else:
-            print("❓ Unknown command. Try: define, explain, summarize, spell.")
+            print("❓ Use: define / explain / summarize / spell / exit")
